@@ -138,8 +138,9 @@ MESSAGE_TAG = {
 
 # Email Configuration
 EMAIL_HOST= os.getenv('EMAIL_HOST') 
-EMAIL_HOST_USER =os
+EMAIL_HOST_USER =os.getenv('EMAIL_HOST_USER')
 EMAIL_USER_TLS =True
 DEFAULY_FROM_EMAIL =os.getenv('EMAIL_HOST_USER')
-EMAIL_PORT = 547
+EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD =os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
