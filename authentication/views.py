@@ -155,4 +155,15 @@ class loginView(View):
                 messages.error(request, "Please fill all fields")
                 return render(request, "authentication/login.html")
             
+
+class logoutView(View):
+    def post(self, request):
+        auth.logout(request)
+        messages.success(request, "You have been logged out")
+        return redirect("login")
+
+    def get(self, request):
+        return redirect("login")
+
+            
            

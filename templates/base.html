@@ -29,8 +29,8 @@
           </span>
         </li>
 
-        <li class="nav-item text-nowrap mt-3 ml-2">
-          <form action="#" method="POST">
+        <li class="nav-item text-nowrap mt-3 ml-2" method="POST">
+          <form action="{% url 'logout' %}" >
             {% csrf_token %}
             <input
               class="text text-capitalize"
