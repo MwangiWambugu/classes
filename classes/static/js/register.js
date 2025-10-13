@@ -1,7 +1,7 @@
 const usernamefield = document.querySelector('#usernameField');
 const feedBackArea = document.querySelector('.invalid-feedback');
 const emailField = document.querySelector('#emailField');
-const emailFeedBackArea = document.querySelector('.email-invalid-feedback'); //emailFeedBackArea
+const emailFeedBackArea = document.querySelector('.emailFeedBackArea');
 const passwordField = document.querySelector('#passwordField');
 const passwordFeedBackArea = document.querySelector('.password-invalid-feedback');
 const showPasswordToggle = document.querySelector('.showPasswordToggle');
@@ -32,7 +32,7 @@ emailField.addEventListener("keyup", (e) => {
 
 
     if (emailval.length > 0) {
-        fetch("/authentication/validate-email/", {
+        fetch("/authentication/validate_email/", {
             method: "POST",
             body: JSON.stringify({ email: emailval }),
             
@@ -69,7 +69,7 @@ usernamefield.addEventListener("keyup", (e) => {
 
 
     if (usernameval.length > 0) {
-        fetch("/authentication/validate-username/", {
+        fetch("/authentication/validate_username/", {
             method: "POST",
             body: JSON.stringify({ username: usernameval }),
             

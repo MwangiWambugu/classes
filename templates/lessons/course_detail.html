@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}| {{ course.title }}{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">{{ course.title }}</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <a href="{% url 'lessons' %}" class="btn btn-sm btn-outline-secondary">
+      ← Back to Dashboard
+    </a>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="card-title">About This Course</h4>
+          <p class="card-text">{{ course.description }}</p>
+          {% if course.instructor %}
+          <p class="text-muted">
+            <strong>Instructor:</strong> {{ course.instructor.username }}
+          </p>
+          {% endif %}
+          <p class="text-muted">
+            <strong>Total Lessons:</strong> {{ lessons.count }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Course Content</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          {% if lessons %}
+            {% for lesson in lessons %}
+            <a href="{% url 'lesson_detail' course.slug lesson.slug %}" class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <span>{{ forloop.counter }}. {{ lesson.title }}</span>
+              </div>
+            </a>
+            {% endfor %}
+          {% else %}
+            <div class="list-group-item">
+              <p class="mb-0 text-muted">No lessons available yet.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

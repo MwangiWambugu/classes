@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}| {{ lesson.title }}{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">{{ lesson.title }}</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <a href="{% url 'course_detail' course.slug %}" class="btn btn-sm btn-outline-secondary">
+      ← Back to Course
+    </a>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="card-title mb-4">{{ lesson.title }}</h4>
+          <div class="lesson-content">
+            {{ lesson.content|linebreaks }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="d-flex justify-content-between mb-4">
+        {% if previous_lesson %}
+          <a href="{% url 'lesson_detail' course.slug previous_lesson.slug %}" class="btn btn-secondary">
+            ← Previous: {{ previous_lesson.title }}
+          </a>
+        {% else %}
+          <div></div>
+        {% endif %}
+
+        {% if next_lesson %}
+          <a href="{% url 'lesson_detail' course.slug next_lesson.slug %}" class="btn btn-primary">
+            Next: {{ next_lesson.title }} →
+          </a>
+        {% else %}
+          <a href="{% url 'course_detail' course.slug %}" class="btn btn-success">
+            ✓ Course Complete
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">{{ course.title }}</h6>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for item in all_lessons %}
+          <a href="{% url 'lesson_detail' course.slug item.slug %}"
+             class="list-group-item list-group-item-action {% if item == lesson %}active{% endif %}">
+            <small>{{ forloop.counter }}. {{ item.title }}</small>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

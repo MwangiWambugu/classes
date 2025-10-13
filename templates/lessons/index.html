@@ -1,10 +1,48 @@
 {% extends "base.html" %}
 
+{% block title %}| Dashboard{% endblock %}
+
 {% block content %}
 
-<!-- <div class="text-center mt-5">
-  <h2>Welcome to the Lessons Dashboard 🎓</h2>
-  <p>You’re now logged in.</p>
-</div> -->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Dashboard</h1>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="mb-4">Available Courses</h3>
+
+      {% if courses %}
+        <div class="row">
+          {% for course in courses %}
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ course.title }}</h5>
+                <p class="card-text">{{ course.description|truncatewords:20 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">{{ course.get_lesson_count }} lesson{{ course.get_lesson_count|pluralize }}</small>
+                  <a href="{% url 'course_detail' course.slug %}" class="btn btn-sm btn-primary">View Course</a>
+                </div>
+              </div>
+              {% if course.instructor %}
+              <div class="card-footer text-muted">
+                <small>Instructor: {{ course.instructor.username }}</small>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-info" role="alert">
+          <h4 class="alert-heading">No courses available yet!</h4>
+          <p>Check back soon for new courses. We're working on adding exciting content for you.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
 
 {% endblock %}
