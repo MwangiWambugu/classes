@@ -48,30 +48,30 @@ The application currently focuses on authentication infrastructure and dashboard
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Django Application                       │
+│                     Django Application                      │
 ├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  ┌─────────────────┐         ┌─────────────────┐           │
-│  │  Authentication │         │    Lessons      │           │
-│  │      App        │         │      App        │           │
-│  │                 │         │                 │           │
-│  │ • Registration  │         │ • Dashboard     │           │
-│  │ • Login/Logout  │────────▶│ • (Future:      │           │
-│  │ • Verification  │         │   Course Models)│           │
-│  │ • AJAX Validation│        │                 │           │
-│  └─────────────────┘         └─────────────────┘           │
-│         │                            │                       │
-│         └────────────┬───────────────┘                       │
-│                      │                                        │
+│                                                             │
+│  ┌─────────────────┐         ┌─────────────────┐            │
+│  │  Authentication │         │    Lessons      │            │
+│  │      App        │         │      App        │            │
+│  │                 │         │                 │            │
+│  │ • Registration  │         │ • Dashboard     │            │
+│  │ • Login/Logout  │────────▶│ • (Future:      │            │
+│  │ • Verification  │         │   Course Models)│            │
+│  │ • AJAX Validation│        │                 │            │
+│  └─────────────────┘         └─────────────────┘            │
+│         │                            │                      │
+│         └────────────┬───────────────┘                      │
+│                      │                                      │
 │         ┌────────────▼──────────────┐                       │
 │         │   Django ORM / Models     │                       │
 │         │   (Using built-in User)   │                       │
 │         └────────────┬──────────────┘                       │
-│                      │                                        │
+│                      │                                      │
 │         ┌────────────▼──────────────┐                       │
 │         │   PostgreSQL Database     │                       │
 │         └───────────────────────────┘                       │
-│                                                               │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -268,11 +268,11 @@ The application currently focuses on authentication infrastructure and dashboard
        │
        │ GET /
        ▼
-┌──────────────────────────────────────┐
-│  lessons.views.home()                │
-│  @login_required(                    │
+┌─────────────────────────────────────────┐
+│  lessons.views.home()                   │
+│  @login_required(                       │
 │      login_url='/authentication/login/')│
-└──────────────┬───────────────────────┘
+└──────────────┬──────────────────────────┘
                │
         ┌──────┴──────┐
         │             │
