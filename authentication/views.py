@@ -11,7 +11,7 @@ from django.contrib import auth
 from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
-from django .urls import reverse
+from django.urls import reverse
 from .utils import token_generator
 from django.contrib import auth
 
@@ -94,17 +94,17 @@ class registrationView(View):
         email_body = "Hi " + user.username + \
             " Please use this link to verify your account \n" + \
             "http://" + domain + link
-        
+
         email = EmailMessage(
         email_subject,
         email_body,
         "noreply@semicolon.com",
         [email],
-        
+
     )
         email.send(fail_silently=False)
 
-        messages.success(request, "Account created successfully! Please log in.")
+        messages.success(request, "Account created successfully! Please check your email to activate your account.")
         return render(request, "authentication/register.html")
 
 
@@ -140,20 +140,23 @@ class loginView(View):
         username=request.POST.get("username")
         password=request.POST.get("password")
 
-        if username and password:
-            user=auth.authenticate(username=username, password=password)
+        if not username or not password:
+            messages.error(request, "Please provide both username and password")
+            return render(request, "authentication/login.html")
 
-            if user:
-                if user.is_active:
-                    auth.login(request, user)
-                    messages.success(request, "Welcome " + user.username + " you are now logged in")
-                    return redirect("lessons")         
-                else:  
-                    messages.error(request, "Account is not active, please check your email")
-                    return render(request, "authentication/login.html")
+        user = auth.authenticate(username=username, password=password)
+
+        if user:
+            if user.is_active:
+                auth.login(request, user)
+                messages.success(request, "Welcome " + user.username + " you are now logged in")
+                return redirect("lessons")
             else:
-                messages.error(request, "Please fill all fields")
+                messages.error(request, "Account is not active, please check your email")
                 return render(request, "authentication/login.html")
+
+        messages.error(request, "Invalid credentials, please try again")
+        return render(request, "authentication/login.html")
             
 
 class logoutView(View):
