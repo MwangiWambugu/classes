@@ -1,23 +1,71 @@
-.bd-placeholder-img{
-    font-size:1.125rem;
-    text-anchor:middle;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    user-select:none
-    }
-    
-@media (min-width: 768px){
-    .bd-placeholder-img-lg{
-        font-size:3.5rem}
-    }
+/* Base placeholder styling */
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  color: #6c757d;
+  opacity: 0.8;
+}
 
-.showPasswordToggle{
-    cursor:pointer;
-    transition: all;
+/* Larger placeholders for wider screens */
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
 
-    }
+/* Show/Hide password toggle */
+.showPasswordToggle {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: #0d6efd; /* Bootstrap primary blue */
+  font-weight: 500;
+}
 
-.showPasswordToggle:hover{
-    transform:scale(1.2);
+.showPasswordToggle:hover {
+  transform: scale(1.25);
+  color: #0a58ca; /* darker blue on hover */
+}
 
-    }
+/* Blue button styling */
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0a58ca;
+  border-color: #0a58ca;
+  transform: translateY(-2px);
+}
+
+/* Optional: page layout enhancements */
+body {
+  background-color: #070707;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: #f5f5f5;
+}
+
+form {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 2rem;
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); */
+}
+
+input.form-control {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}

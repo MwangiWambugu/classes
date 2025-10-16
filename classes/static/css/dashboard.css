@@ -1,48 +1,202 @@
-.bi {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
+/* General layout */
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
 }
 
-/*
- * Sidebar
- */
-
-@media (min-width: 768px) {
-  .sidebar .offcanvas-lg {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 48px;
-  }
-  .navbar-search {
-    display: block;
-  }
+/* Navbar styling */
+.navbar {
+  background-color: #0f0f0f !important;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  padding-top: 0.5rem;
 }
 
-.sidebar .nav-link {
-  font-size: .875rem;
+.navbar-brand {
+  font-weight: 600;
+  color: #f8f4f4 !important;
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
+}
+
+.nav-link {
+  color: #faf5f5 !important;
   font-weight: 500;
 }
 
-.sidebar .nav-link.active {
-  color: #2470dc;
+/* Search bar styling */
+/* Search bar styling */
+.search-container {
+  margin-top: 5rem; /* ✅ Pushes search bar down so it's not hidden under navbar */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-input {
+  background-color: #ffffff;
+  color: #212529;
+  border: 1px solid #ced4da; /* ✅ Added subtle border for contrast */
+  border-radius: 0.375rem;
+  box-shadow: 0 0 0 2px transparent;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  padding: 0.6rem 1rem; /* ✅ Comfortable click area */
+  width: 100%;
+  max-width: 350px;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+  outline: none;
+}
+
+/* ✅ More visible search button */
+.search-btn {
+  background-color: #0d6efd; /* ✅ Bright blue button for visibility */
+  color: #ffffff;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  size: 100px;
+}
+
+/* *Search button styling */
+.search-btn {
+  margin-top: 0.2rem; /* align with search input */
+  color: #fff;
+  background-color: #0d6efd; /* Bootstrap primary blue */
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.search-btn:hover {
+  background-color: #084298; /* darker blue on hover */
+  color: #fff;
+}
+
+.search-btn:hover {
+  background-color: #0b5ed7; /* ✅ Slightly darker on hover */
+  transform: scale(1.05);
+}
+
+
+/* Sidebar */
+/* Sidebar container */
+/* Sidebar container */
+.sidebar {
+  background-color: #2ea0a0;
+  border-right: 1px solid #0a0a0a;
+  position: fixed; /* Keep sidebar fixed on scroll */
+  top: 70px; /* ✅ Starts right after the navbar (Bootstrap default height) */
+  left: 0;
+  width: 180px;
+  height: calc(100vh - 56px); /* ✅ Fills the remaining height under navbar */
+  overflow-y: auto;
+  z-index: 1020;
 }
 
 .sidebar-heading {
-  font-size: .75rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #000000 !important; /* ✅ Force black color */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-top: 1rem;
 }
 
-/*
- * Navbar
- */
-
-.navbar-brand {
-  padding-top: .75rem;
-  padding-bottom: .75rem;
-  background-color: rgba(0, 0, 0, .25);
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+/* Sidebar links */
+.sidebar .nav-link {
+  color: #080101; /* ✅ Black text */
+  font-weight: 200;
+  padding: 0.5rem 1rem;
+  display: block;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.navbar .form-control {
-  padding: .75rem 1rem;
+.sidebar .nav-link:hover {
+  background-color: #161616;
+  color: #fafafa;
+}
+
+.sidebar .nav-link.active {
+  background-color: #0d6efd;
+  color: #ffffff;
+  border-radius: 0.375rem;
+}
+
+
+
+/* Main content area */
+main {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  margin-top: 3rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-left: 200px; /* ✅ Space for sidebar */
+  margin-right: 2rem;
+}
+
+/* Buttons */
+.btn-outline-light {
+  background-color: #0d6efd !important; /* ✅ Same blue as navbar */
+  border: none;
+  color: #ffffff !important;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-outline-light:hover {
+  background-color: #0b5ed7 !important;
+  color: #f0ecec !important;
+  transform: scale(1.03);
+}
+
+/* Adjust spacing for nav elements */
+.navbar-nav {
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Optional: make logout form align better */
+.navbar form {
+  margin: 0;
+}
+
+
+/* Logout button styling */
+.logout-btn {
+  background-color: #0d6efd; /* ✅ Same color as banner */
+  color: #f7f2f2; /* ✅ White text */
+  border: none;
+  font-weight: 500;
+  padding: 0.4rem 0.3rem;
+  border-radius: 0rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #0d6efd; /* Slightly darker blue */
+  transform: scale(1.05);
+}
+
+.logout-btn:focus {
+  outline: none;
+  
+}
+
+.blend {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  
 }

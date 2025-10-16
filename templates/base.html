@@ -7,6 +7,21 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>Ctrl+Shift Academy {% block title %} {% endblock %}</title>
+    <div div class="search-container">
+      <form class="w-50 mx-auto d-flex align-items-center" role="search" method="get" action="#">
+      <input
+        class="form-control form-control-dark w-100 rounded-pill px-3 search-input"
+        type="text"
+        placeholder="Search courses, instructors, or content..."
+        aria-label="Search"
+        name="q"
+      />
+      <button class="btn btn-primary btn-sm rounded-pill ms-2 px-3 search-btn" type="submit">
+        <i data-feather="search" class="me-1"></i> Search
+      </button>
+
+      </form>
+    </div>
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" />
     <link href="{% static 'css/main.css'%}" rel="stylesheet" />
@@ -28,15 +43,14 @@
             ({{request.user.username}})
           </span>
         </li>
-
-        <li class="nav-item text-nowrap mt-3 ml-2" method="POST">
-          <form action="{% url 'logout' %}" method="post">
+        <li class="nav-item text-nowrap mt-3 ml-2">
+          <form action="{% url 'logout' %}" method="post" class="blend d-inline">
             {% csrf_token %}
-            <input
-              class="text text-capitalize"
-              type="submit"
-              value="Sign out"
-            />
+            <button type="submit" class="btn logout-btn text-capitalize">
+              Sign out
+            </button>
+          </form>
+        </li>
           </form>
         </li>
       </ul>
@@ -45,7 +59,7 @@
     <div class="container-fluid">
       <div class="row">
         {% include 'partials/_sidebar.html' %}
-
+    </div>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
           {% block content %}
           {% endblock %}
@@ -63,11 +77,7 @@
           '<script src="/docs/4.4/static/js/vendor/jquery.slim.min.js"><\/script>'
         );
     </script>
-    <!-- <script
-      src="/docs/4.4/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
-      crossorigin="anonymous"
-    ></script> -->
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
      <script src="{% static 'js/main.js' %}"></script>
   </body>
