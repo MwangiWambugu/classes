@@ -1,35 +1,50 @@
-/* Base placeholder styling */
+/* --- General Reset & Body Layout --- */
+body {
+  font-family: "Inter", "Poppins", "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #0d6efd 0%, #4dabf7 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+
+  /* ✅ Center content vertically & horizontally */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* color: #212529; */
+}
+
+/* --- Placeholder Text --- */
 .bd-placeholder-img {
   font-size: 1.125rem;
   text-anchor: middle;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  color: #6c757d;
-  opacity: 0.8;
-}
+  
+  opacity: 0.8; 
+} 
 
-/* Larger placeholders for wider screens */
 @media (min-width: 768px) {
   .bd-placeholder-img-lg {
     font-size: 3.5rem;
   }
 }
 
-/* Show/Hide password toggle */
+/* --- Password Toggle --- */
 .showPasswordToggle {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  color: #0d6efd; /* Bootstrap primary blue */
+  color: #0d6efd;
   font-weight: 500;
 }
 
 .showPasswordToggle:hover {
   transform: scale(1.25);
-  color: #0a58ca; /* darker blue on hover */
+  color: #0a58ca;
 }
 
-/* Blue button styling */
+/* --- Buttons --- */
 .btn-primary {
   background-color: #0d6efd;
   border-color: #0d6efd;
@@ -45,20 +60,18 @@
   transform: translateY(-2px);
 }
 
-/* Optional: page layout enhancements */
-body {
-  background-color: #070707;
-  font-family: "Inter", "Segoe UI", sans-serif;
-  color: #f5f5f5;
-}
-
+/* --- Form Container --- */
 form {
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 2rem;
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); */
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.6s ease-in-out;
 }
 
+/* --- Form Inputs --- */
 input.form-control {
   border-radius: 6px;
   border: 1px solid #ced4da;
@@ -68,4 +81,208 @@ input.form-control {
 input.form-control:focus {
   border-color: #0d6efd;
   box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+
+/* --- Layout Containers --- */
+.container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.container2{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+/* --- Card Styling --- */
+.card {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.card-body {
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.card-title {
+  color: #0d6efd;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Column Tweaks --- */
+.col-md-4 {
+  margin-top: 0;
+}
+
+/* --- Animation --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* regtister css */
+/* Global page style */
+body {
+  font-family: "Inter", "Poppins", "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #f0f4ff, #d9e8ff);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Ensure top-level container fills entire viewport */
+
+.row {
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 200vh; 
+  margin: 0; 
+ } 
+
+/* Card container */
+.card {
+  background: #ffffff;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 300%;
+  max-width: 420px;
+  display: flex;
+}
+
+/* Register position */
+.col-md-4 {
+  padding-left: 100px;
+  
+}
+
+/* loggin position */
+.col-md-10 {
+  padding-left: 300px;
+  
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Card body */
+.card-body {
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+/* Title styling */
+.card-title {
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Input fields */
+input.form-control {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+}
+
+input.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+}
+
+/* Submit button */
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 0.75rem;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0a58ca;
+  border-color: #0a58ca;
+  transform: translateY(-2px);
+}
+
+/* Show password toggle */
+.showPasswordToggle {
+  cursor: pointer;
+  color: #0d6efd;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  float: right;
+}
+
+.showPasswordToggle:hover {
+  color: #0a58ca;
+  transform: scale(1.1);
+}
+
+/* Link styling */
+a {
+  color: #0d6efd;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Error messages */
+.invalid-feedback {
+  display: none;
+  font-size: 0.85rem;
+  color: #dc3545;
+}
+
+/* Responsive behavior */
+@media (max-width: 576px) {
+  .card {
+    margin: 0 1rem;
+  }
+
+ 
 }

@@ -31,11 +31,29 @@ body {
 /* Search bar styling */
 /* Search bar styling */
 .search-container {
-  margin-top: 5rem; /* ✅ Pushes search bar down so it's not hidden under navbar */
+  position: relative; /* ✅ valid position value */
   display: flex;
+  justify-content: flex-start; /* keeps search bar content aligned left inside container */
   align-items: center;
-  gap: 0.5rem;
+  margin-top: 0.5rem; /* space below banner */
+  gap: 1rem;
+  width: 100%; /* ✅ wider container */
+  max-width: 900px; /* increases max width */
+  padding: 0.5rem 1rem;
+  transform: translate(450px, -180px); /* ✅ move more right (220px) and up (-180px) */
+  z-index: 2;
+  background-color: transparent; /* ensures no background color interferes */
+  
 }
+
+
+.search-form {
+  width: 80%; /* ✅ make the search bar wider (adjust to 80% if you want full width) */
+  max-width: 900px; /* prevents it from becoming too wide on large screens */
+  margin: 0 auto;
+  height: 80px;
+}
+
 
 .search-input {
   background-color: #ffffff;
@@ -45,9 +63,11 @@ body {
   box-shadow: 0 0 0 2px transparent;
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
   padding: 0.6rem 1rem; /* ✅ Comfortable click area */
-  width: 100%;
+  width: 200%;
   max-width: 350px;
 }
+
+
 
 .search-input:focus {
   box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
@@ -55,16 +75,6 @@ body {
 }
 
 /* ✅ More visible search button */
-.search-btn {
-  background-color: #0d6efd; /* ✅ Bright blue button for visibility */
-  color: #ffffff;
-  border: none;
-  border-radius: 1rem;
-  padding: 0.6rem 1.2rem;
-  font-weight: 500;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  size: 100px;
-}
 
 /* *Search button styling */
 .search-btn {
@@ -73,6 +83,25 @@ body {
   background-color: #0d6efd; /* Bootstrap primary blue */
   border: none;
   transition: background-color 0.2s ease;
+  width: 90px;
+  margin-left: 50rem;      /* ✅ pushes button slightly right */
+  font-size: 0.9rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  
+}
+
+/* input area */
+.search-input{
+  margin-left: 0.75rem;      /* ✅ pushes button slightly right */
+  font-size: 0.9rem;
+  padding: 1rem 0.5rem;
+  border-radius: 50px;
+  background-color: #fcfcfd;
+  border: none;
+  color: #fff;
+  transition: background-color 0.2s ease;
+  width: 1000px;
 }
 
 .search-btn:hover {
@@ -133,15 +162,7 @@ body {
 
 
 /* Main content area */
-main {
-  background-color: #ffffff;
-  border-radius: 0.5rem;
-  padding: 2rem;
-  margin-top: 3rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-left: 200px; /* ✅ Space for sidebar */
-  margin-right: 2rem;
-}
+
 
 /* Buttons */
 .btn-outline-light {
@@ -199,4 +220,36 @@ main {
   margin: 0;
   padding: 0;
   
+}
+
+
+/* alert css when there is no content */
+/* --- Center Alert on Dashboard --- */
+.alert {
+  position: absolute;             /* allows perfect centering */
+  top: 50%;
+  left: 58%;
+  transform: translate(-50%, -50%);  /* ✅ centers both horizontally & vertically */
+  text-align: center;
+  width: 80%;
+  max-width: 600px;               /* keeps it readable on large screens */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fdfdfd;      /* light blue background */
+  color: #090a0a;                 /* Bootstrap info text color */
+}
+
+/* --- Optional: tweak heading --- */
+.alert-heading {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+/* Optional responsive tweak */
+@media (max-width: 768px) {
+  .alert {
+    width: 90%;
+    padding: 1.5rem;
+  }
 }
