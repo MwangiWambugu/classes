@@ -1,0 +1,146 @@
+/* ====== GLOBAL STYLES ====== */
+body {
+  font-family: "Inter", "Poppins", sans-serif;
+  background-color: #0e3f70;
+  color: #1e293b;
+  margin: 0;
+  padding: 0;
+}
+
+/* ====== CHAT CONTAINER ====== */
+.chat-container  {
+  background: #fbfbfc;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 2rem;
+  max-width: 700px;
+  margin: 2rem auto;
+  transition: all 0.3s ease;
+  
+}
+
+.chat-container:hover, .chat_container:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ====== HEADERS ====== */
+.header {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+/* ====== CHANNEL LIST ====== */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+ul li {
+  background: #f1f5f9;
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  transition: background 0.2s ease;
+}
+
+ul li a {
+  display: block;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+ul li:hover {
+  background: #dbeafe;
+}
+
+ul li a:hover {
+  color: #2563eb;
+}
+
+/* ====== FORM STYLING ====== */
+.form {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.form input[type="text"] {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-size: 1rem;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form input[type="text"]:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+}
+
+/* ====== BUTTONS ====== */
+.chat-button {
+  background-color: #1554db;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.chat-button:hover {
+  background-color: #1e40af;
+  transform: translateY(-2px);
+}
+
+.chat-button:active {
+  transform: translateY(0);
+}
+
+/* ====== CHAT BOX AREA ====== */
+#chat-box {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1rem;
+  height: 350px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+#chat-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-box::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;
+  border-radius: 10px;
+}
+
+/* ====== RESPONSIVE DESIGN ====== */
+@media (max-width: 768px) {
+  .chat-container, .chat_container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .form {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .chat-button {
+    width: 100%;
+  }
+}

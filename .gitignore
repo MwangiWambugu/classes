@@ -1,0 +1,8 @@
+/.idea
+/.vscode
+
+/.gitlab
+/.github
+
+.env
+py312

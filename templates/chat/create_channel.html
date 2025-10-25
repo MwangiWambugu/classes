@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+{% block content %}
+<div class="chat-container mt-4" >
+  <h1 class="header">Channels</h1>
+    <form class="form" method="POST" action="{% url 'create_channel' %}">
+      {% csrf_token %}
+      <input type="text" name="room_name" placeholder="Enter channel name" required>
+      <button class="chat-button" type="submit">Create</button>
+    </form>
+</div>
+{% endblock %}
