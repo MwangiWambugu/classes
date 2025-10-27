@@ -51,9 +51,6 @@ def home(request):
     return render(request, "lessons/index.html", context)
 
 
-
-
-
 @login_required(login_url='/authentication/login/')
 def course_detail(request, slug):
     course = get_object_or_404(Course, slug=slug, is_published=True)

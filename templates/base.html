@@ -7,29 +7,24 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>Ctrl+Shift Academy {% block title %} {% endblock %}</title>
-    {% if not hide_search %}
-    <div class="search-container">
-  <form class="search-form mx-auto d-flex align-items-center" role="search" method="get" action="#">
-    <input
-      class="form-control form-control-dark w-100 rounded-pill px-3 search-input"
-      type="text"
-      placeholder="Search courses, instructors, or content..."
-      aria-label="Search"
-      name="q"
-    />
-    <button class="btn btn-primary btn-sm rounded-pill ms-2 px-3 search-btn" type="submit">
-      <i data-feather="search" class="me-1"></i> Search
-    </button>
-  </form>
-</div>
+    <div div class="search-container">
+      <form class="search-form mx-auto d-flex align-items-center" role="search" method="get" action="#">
+      <input
+        class="form-control form-control-dark w-100 rounded-pill px-3 search-input"
+        type="text"
+        placeholder="Search courses, instructors, or content..."
+        aria-label="Search"
+        name="q"
+      />
+      <button class="btn btn-primary btn-sm rounded-pill ms-2 px-3 search-btn" type="submit">
+        <i data-feather="search" class="me-1"></i> Search
+      </button>
 
-
-
-  {% endif %}
+      </form>
+    </div>
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" />
     <link href="{% static 'css/main.css'%}" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
     <!-- Custom styles for this template -->
