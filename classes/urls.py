@@ -17,14 +17,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from chat import views as chat_views 
 
 urlpatterns = [
-    
-    path("", include("lessons.urls")),
-    path("authentication/", include("authentication.urls")),
     path("admin/", admin.site.urls),
     path("authentication/", include("authentication.urls")),
-    path('', chat_views.home, name='home'),  # ✅ This line defines 'home'
-    path('chat/', include('chat.urls')),     # your chat app URLs
-        ]
+    path("chat/", include("chat.urls")),
+    path("", include("lessons.urls")),  # Lessons as default home page
+]

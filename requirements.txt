@@ -1,7 +1,8 @@
 django==5.2.7
 psycopg2-binary
-environ
+django-environ
 validate-email
 six
-channels 
+channels
 channels_redis
+daphne
