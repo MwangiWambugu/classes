@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+{% block content %}
+<div class="chat-container mt-4">
+  <h2>Welcome to {{ room_name }} Channel</h2>
+
+  <!-- Chat room wrapper with room metadata -->
+  <div id="chat-room" data-room="{{ room_name }}">
+    <div id="chat-box" class="chat-box">
+      {% for msg in messages %}
+        <p>
+          <strong>
+            {% if msg.user %}
+              {{ msg.user.username }}
+            {% else %}
+              Anonymous
+            {% endif %}
+          </strong>: {{ msg.content }}
+        </p>
+      {% empty %}
+        <p class="text-muted">No messages yet. Start the conversation!</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Chat input -->
+  <form id="chat-form" class="form" onsubmit="return false;">
+    {% csrf_token %}
+    <input type="text" id="chat-message-input" name="message" placeholder="Type a message..." required>
+    <button id="chat-send-btn" class="chat-button" type="button">Send</button>
+  </form>
+</div>
+{% endblock %}

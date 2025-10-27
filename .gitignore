@@ -5,4 +5,8 @@
 /.github
 
 .env
-py312
+*.pyc
+__pycache__/
+*.pyo
+.Python
+py312/
