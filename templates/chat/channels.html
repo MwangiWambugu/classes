@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+{% block content %}
+<div class="chat-container mt-4" >
+  <h2 class="header">Available Chat Channels</h2>
+
+  <ul>
+    {% for channel in channels %}
+      <li><a href="{% url 'channel_room' channel.name %}">{{ channel.name }}</a></li>
+    {% empty %}
+      <li>No channels yet.</li>
+    {% endfor %}
+  </ul>
+
+  <form class="form" method="POST" action="{% url 'create_channel' %}">
+    {% csrf_token %}
+    <input type="text" name="room_name" placeholder="New channel name" required>
+    <button class = "chat-button" type="submit">Create Channel</button>
+  </form>
+</div>
+{% endblock %}

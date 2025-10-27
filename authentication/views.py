@@ -59,6 +59,7 @@ class registrationView(View):
         username=request.POST.get("username")
         email=request.POST.get("email")
         password=request.POST.get("password")
+        role=request.POST.get("role", "student")  # Get role, default to student
 
         # check if username exists
         if User.objects.filter(username=username).exists():
@@ -75,10 +76,20 @@ class registrationView(View):
             messages.error(request, "Password too short (min 6 chars)")
             return render(request, "authentication/register.html")
 
+        # Validate role
+        valid_roles = ['student', 'instructor']  # Only allow student/instructor during registration
+        if role not in valid_roles:
+            role = 'student'
+
         # if everything is fine → create user
         user = User.objects.create_user(username=username, email=email, password=password)
-        user.is_active = False # for email verification   
+        user.is_active = False # for email verification
         user.save()
+
+        # Update user profile with selected role
+        if hasattr(user, 'auth_profile'):
+            user.auth_profile.role = role
+            user.auth_profile.save()
         email_subject = "Activate your account"
         
         # path_to_view
@@ -150,6 +161,18 @@ class loginView(View):
             if user.is_active:
                 auth.login(request, user)
                 messages.success(request, "Welcome " + user.username + " you are now logged in")
+
+                # Role-based dashboard routing
+                if hasattr(user, 'auth_profile'):
+                    profile = user.auth_profile
+                    if profile.role == 'admin':
+                        return redirect("admin_dashboard")
+                    elif profile.role == 'staff':
+                        return redirect("staff_dashboard")
+                    elif profile.role == 'instructor':
+                        return redirect("instructor_dashboard")
+
+                # Default to student dashboard (lessons home)
                 return redirect("lessons")
             else:
                 messages.error(request, "Account is not active, please check your email")

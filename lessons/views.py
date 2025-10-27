@@ -13,21 +13,42 @@ from .models import (
 
 @login_required(login_url='/authentication/login/')
 def home(request):
-    # Get all published courses
-    courses = Course.objects.filter(is_published=True).select_related('category', 'instructor')
+    from authentication.models import InstructorFollow
+
+    # Get instructors that the user is following
+    following_instructor_ids = InstructorFollow.objects.filter(
+        student=request.user
+    ).values_list('instructor_id', flat=True)
+
+    # Get courses based on following status
+    # Show courses from followed instructors OR courses available through search
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        # When searching, show all published courses matching the query
+        courses = Course.objects.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(instructor__username__icontains=search_query) |
+            Q(instructor__first_name__icontains=search_query) |
+            Q(instructor__last_name__icontains=search_query),
+            is_published=True
+        ).select_related('category', 'instructor').distinct()
+    else:
+        # Without search, only show courses from followed instructors
+        # If not following anyone, show empty or a message
+        if following_instructor_ids:
+            courses = Course.objects.filter(
+                instructor_id__in=following_instructor_ids,
+                is_published=True
+            ).select_related('category', 'instructor')
+        else:
+            courses = Course.objects.none()  # No courses if not following anyone
 
     # Get user's enrollments
     enrolled_course_ids = Enrollment.objects.filter(
         user=request.user, is_active=True
     ).values_list('course_id', flat=True)
-
-    # Search functionality
-    search_query = request.GET.get('search', '')
-    if search_query:
-        courses = courses.filter(
-            Q(title__icontains=search_query) |
-            Q(description__icontains=search_query)
-        )
 
     # Category filter
     category_slug = request.GET.get('category', '')
@@ -40,6 +61,9 @@ def home(request):
     if difficulty:
         courses = courses.filter(difficulty=difficulty)
 
+    # Get followed instructors for sidebar/display
+    followed_instructors = User.objects.filter(id__in=following_instructor_ids)
+
     context = {
         'courses': courses,
         'categories': categories,
@@ -47,6 +71,8 @@ def home(request):
         'search_query': search_query,
         'selected_category': category_slug,
         'selected_difficulty': difficulty,
+        'followed_instructors': followed_instructors,
+        'following_count': len(following_instructor_ids),
     }
     return render(request, "lessons/index.html", context)
 
@@ -326,7 +352,10 @@ def quiz_submit(request, course_slug, lesson_slug, quiz_id):
 @login_required(login_url='/authentication/login/')
 def instructor_dashboard(request):
     # Check if user is an instructor
-    if not request.user.is_staff and not Course.objects.filter(instructor=request.user).exists():
+    has_instructor_role = hasattr(request.user, 'auth_profile') and request.user.auth_profile.is_instructor()
+    has_courses = Course.objects.filter(instructor=request.user).exists()
+
+    if not request.user.is_staff and not has_instructor_role and not has_courses:
         messages.error(request, "You don't have access to the instructor dashboard.")
         return redirect('lessons')
 
@@ -334,6 +363,10 @@ def instructor_dashboard(request):
     courses = Course.objects.filter(instructor=request.user).annotate(
         enrollment_count=Count('enrollments', filter=Q(enrollments__is_active=True))
     )
+
+    # Get followers count
+    from authentication.models import InstructorFollow
+    followers_count = InstructorFollow.objects.filter(instructor=request.user).count()
 
     # Statistics
     total_students = Enrollment.objects.filter(
@@ -351,5 +384,339 @@ def instructor_dashboard(request):
         'total_courses': courses.count(),
         'total_students': total_students,
         'total_completions': total_completions,
+        'followers_count': followers_count,
     }
     return render(request, "lessons/instructor_dashboard.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def admin_dashboard(request):
+    """Admin dashboard view"""
+    if not (request.user.is_superuser or (hasattr(request.user, 'auth_profile') and request.user.auth_profile.is_admin())):
+        messages.error(request, "You don't have access to the admin dashboard.")
+        return redirect('lessons')
+
+    # Statistics
+    total_users = User.objects.count()
+    total_courses = Course.objects.count()
+    total_enrollments = Enrollment.objects.filter(is_active=True).count()
+    total_instructors = User.objects.filter(auth_profile__role='instructor').count()
+
+    recent_users = User.objects.order_by('-date_joined')[:10]
+    recent_courses = Course.objects.order_by('-created_at')[:10]
+
+    context = {
+        'total_users': total_users,
+        'total_courses': total_courses,
+        'total_enrollments': total_enrollments,
+        'total_instructors': total_instructors,
+        'recent_users': recent_users,
+        'recent_courses': recent_courses,
+    }
+    return render(request, "lessons/admin_dashboard.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def staff_dashboard(request):
+    """Staff dashboard view"""
+    if not (request.user.is_staff or (hasattr(request.user, 'auth_profile') and request.user.auth_profile.is_staff_member())):
+        messages.error(request, "You don't have access to the staff dashboard.")
+        return redirect('lessons')
+
+    # Statistics
+    total_courses = Course.objects.count()
+    total_enrollments = Enrollment.objects.filter(is_active=True).count()
+    pending_reviews = 0  # Placeholder for future feature
+
+    recent_enrollments = Enrollment.objects.select_related('user', 'course').order_by('-enrolled_at')[:15]
+
+    context = {
+        'total_courses': total_courses,
+        'total_enrollments': total_enrollments,
+        'pending_reviews': pending_reviews,
+        'recent_enrollments': recent_enrollments,
+    }
+    return render(request, "lessons/staff_dashboard.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def create_course(request):
+    """Create a new course"""
+    if not (hasattr(request.user, 'auth_profile') and request.user.auth_profile.is_instructor()):
+        messages.error(request, "Only instructors can create courses.")
+        return redirect('lessons')
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category_id = request.POST.get('category')
+        difficulty = request.POST.get('difficulty', 'beginner')
+        duration_hours = request.POST.get('duration_hours', 0)
+        thumbnail = request.POST.get('thumbnail', '')
+
+        # Validation
+        if not title or not description:
+            messages.error(request, "Title and description are required.")
+            return redirect('create_course')
+
+        # Create course
+        course = Course.objects.create(
+            title=title,
+            description=description,
+            instructor=request.user,
+            difficulty=difficulty,
+            duration_hours=duration_hours,
+            thumbnail=thumbnail,
+            is_published=False  # Draft by default
+        )
+
+        if category_id:
+            category = Category.objects.filter(id=category_id).first()
+            if category:
+                course.category = category
+                course.save()
+
+        messages.success(request, f"Course '{title}' created successfully!")
+        return redirect('edit_course', slug=course.slug)
+
+    categories = Category.objects.all()
+    context = {'categories': categories}
+    return render(request, "lessons/create_course.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def edit_course(request, slug):
+    """Edit an existing course"""
+    course = get_object_or_404(Course, slug=slug, instructor=request.user)
+
+    if request.method == 'POST':
+        course.title = request.POST.get('title', course.title)
+        course.description = request.POST.get('description', course.description)
+        course.difficulty = request.POST.get('difficulty', course.difficulty)
+        course.duration_hours = request.POST.get('duration_hours', course.duration_hours)
+        course.thumbnail = request.POST.get('thumbnail', course.thumbnail)
+        course.is_published = request.POST.get('is_published') == 'on'
+
+        category_id = request.POST.get('category')
+        if category_id:
+            category = Category.objects.filter(id=category_id).first()
+            course.category = category
+
+        course.save()
+        messages.success(request, "Course updated successfully!")
+        return redirect('edit_course', slug=course.slug)
+
+    categories = Category.objects.all()
+    lessons = course.lessons.all()
+
+    context = {
+        'course': course,
+        'categories': categories,
+        'lessons': lessons,
+    }
+    return render(request, "lessons/edit_course.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def create_lesson(request, course_slug):
+    """Create a new lesson for a course"""
+    course = get_object_or_404(Course, slug=course_slug, instructor=request.user)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content', '')
+        content_type = request.POST.get('content_type', 'text')
+        video_url = request.POST.get('video_url', '')
+        audio_url = request.POST.get('audio_url', '')
+        image_url = request.POST.get('image_url', '')
+        duration_minutes = request.POST.get('duration_minutes', 0)
+        order = request.POST.get('order', 0)
+
+        if not title:
+            messages.error(request, "Lesson title is required.")
+            return redirect('create_lesson', course_slug=course_slug)
+
+        lesson = Lesson.objects.create(
+            course=course,
+            title=title,
+            content=content,
+            content_type=content_type,
+            video_url=video_url,
+            audio_url=audio_url,
+            image_url=image_url,
+            duration_minutes=duration_minutes,
+            order=order
+        )
+
+        messages.success(request, f"Lesson '{title}' created successfully!")
+        return redirect('edit_lesson', course_slug=course_slug, lesson_slug=lesson.slug)
+
+    context = {'course': course}
+    return render(request, "lessons/create_lesson.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def edit_lesson(request, course_slug, lesson_slug):
+    """Edit an existing lesson"""
+    course = get_object_or_404(Course, slug=course_slug, instructor=request.user)
+    lesson = get_object_or_404(Lesson, course=course, slug=lesson_slug)
+
+    if request.method == 'POST':
+        lesson.title = request.POST.get('title', lesson.title)
+        lesson.content = request.POST.get('content', lesson.content)
+        lesson.content_type = request.POST.get('content_type', lesson.content_type)
+        lesson.video_url = request.POST.get('video_url', '')
+        lesson.audio_url = request.POST.get('audio_url', '')
+        lesson.image_url = request.POST.get('image_url', '')
+        lesson.duration_minutes = request.POST.get('duration_minutes', lesson.duration_minutes)
+        lesson.order = request.POST.get('order', lesson.order)
+
+        lesson.save()
+        messages.success(request, "Lesson updated successfully!")
+        return redirect('edit_course', slug=course_slug)
+
+    context = {
+        'course': course,
+        'lesson': lesson,
+    }
+    return render(request, "lessons/edit_lesson.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def delete_lesson(request, course_slug, lesson_slug):
+    """Delete a lesson"""
+    if request.method == 'POST':
+        course = get_object_or_404(Course, slug=course_slug, instructor=request.user)
+        lesson = get_object_or_404(Lesson, course=course, slug=lesson_slug)
+
+        lesson_title = lesson.title
+        lesson.delete()
+
+        messages.success(request, f"Lesson '{lesson_title}' deleted successfully!")
+        return redirect('edit_course', slug=course_slug)
+
+    return redirect('instructor_dashboard')
+
+
+@login_required(login_url='/authentication/login/')
+def follow_instructor(request, instructor_id):
+    """Follow an instructor"""
+    if request.method == 'POST':
+        from authentication.models import InstructorFollow
+
+        instructor = get_object_or_404(User, id=instructor_id)
+
+        # Check if instructor has instructor role
+        if not (hasattr(instructor, 'auth_profile') and instructor.auth_profile.is_instructor()):
+            messages.error(request, "This user is not an instructor.")
+            return redirect('lessons')
+
+        # Prevent following yourself
+        if instructor == request.user:
+            messages.error(request, "You cannot follow yourself.")
+            return redirect('lessons')
+
+        # Create or get follow relationship
+        follow, created = InstructorFollow.objects.get_or_create(
+            student=request.user,
+            instructor=instructor
+        )
+
+        if created:
+            messages.success(request, f"You are now following {instructor.username}!")
+        else:
+            messages.info(request, f"You are already following {instructor.username}.")
+
+        return redirect('instructor_profile', username=instructor.username)
+
+    return redirect('lessons')
+
+
+@login_required(login_url='/authentication/login/')
+def unfollow_instructor(request, instructor_id):
+    """Unfollow an instructor"""
+    if request.method == 'POST':
+        from authentication.models import InstructorFollow
+
+        instructor = get_object_or_404(User, id=instructor_id)
+
+        follow = InstructorFollow.objects.filter(
+            student=request.user,
+            instructor=instructor
+        ).first()
+
+        if follow:
+            follow.delete()
+            messages.success(request, f"You have unfollowed {instructor.username}.")
+        else:
+            messages.info(request, f"You are not following {instructor.username}.")
+
+        return redirect('instructor_profile', username=instructor.username)
+
+    return redirect('lessons')
+
+
+@login_required(login_url='/authentication/login/')
+def instructor_profile(request, username):
+    """View instructor profile and their courses"""
+    instructor = get_object_or_404(User, username=username)
+
+    # Check if user is an instructor
+    if not (hasattr(instructor, 'auth_profile') and instructor.auth_profile.is_instructor()):
+        messages.error(request, "This user is not an instructor.")
+        return redirect('lessons')
+
+    from authentication.models import InstructorFollow
+
+    # Check if current user is following this instructor
+    is_following = InstructorFollow.objects.filter(
+        student=request.user,
+        instructor=instructor
+    ).exists()
+
+    # Get instructor's courses
+    # If following or own profile, show all; otherwise only published
+    if request.user == instructor:
+        courses = Course.objects.filter(instructor=instructor)
+    elif is_following:
+        courses = Course.objects.filter(instructor=instructor, is_published=True)
+    else:
+        # For non-followers, only show published courses they can search for
+        courses = Course.objects.filter(instructor=instructor, is_published=True)
+
+    # Get follower count
+    followers_count = InstructorFollow.objects.filter(instructor=instructor).count()
+
+    context = {
+        'instructor': instructor,
+        'courses': courses,
+        'is_following': is_following,
+        'followers_count': followers_count,
+        'is_own_profile': request.user == instructor,
+    }
+    return render(request, "lessons/instructor_profile.html", context)
+
+
+@login_required(login_url='/authentication/login/')
+def search_instructors(request):
+    """Search for instructors"""
+    query = request.GET.get('q', '')
+
+    if query:
+        # Search for users with instructor role
+        instructors = User.objects.filter(
+            Q(username__icontains=query) |
+            Q(email__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query),
+            auth_profile__role='instructor'
+        ).distinct()
+    else:
+        # Show all instructors if no query
+        instructors = User.objects.filter(auth_profile__role='instructor')
+
+    context = {
+        'instructors': instructors,
+        'search_query': query,
+    }
+    return render(request, "lessons/search_instructors.html", context)

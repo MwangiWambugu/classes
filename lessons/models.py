@@ -71,11 +71,22 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    CONTENT_TYPE_CHOICES = [
+        ('text', 'Text'),
+        ('video', 'Video'),
+        ('audio', 'Audio'),
+        ('image', 'Image'),
+        ('mixed', 'Mixed Content'),
+    ]
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, blank=True)
-    content = models.TextField()
+    content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES, default='text')
+    content = models.TextField(help_text='Text content or description')
     video_url = models.URLField(blank=True, help_text='YouTube or video URL')
+    audio_url = models.URLField(blank=True, help_text='Audio file URL')
+    image_url = models.URLField(blank=True, help_text='Image file URL')
     duration_minutes = models.PositiveIntegerField(default=0, help_text='Lesson duration in minutes')
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

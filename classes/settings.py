@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "channels",
     "authentication",
     "lessons",
+    "chat",
 ]
 
 MIDDLEWARE = [
@@ -145,3 +147,15 @@ DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
 EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Channels Configuration
+ASGI_APPLICATION = "classes.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": 'channels_redis.core.RedisChannelLayer',
+        "CONFIG": {
+            "hosts": [(os.getenv("REDIS_HOST", default="localhost"), 6379)],
+        },
+    },
+}
